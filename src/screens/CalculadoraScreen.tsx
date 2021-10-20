@@ -12,7 +12,49 @@ export const CalculadoraScreen = () => {
   };
 
   const armarNumero = (numeroTexto: string) => {
-    setNumero(numero + numeroTexto);
+    //No aceptar doble punto
+    if (numero.includes('.') && numeroTexto === '.') return;
+    if (numero.startsWith('0') || numero.startsWith('-0')) {
+      // Punto decimal
+      if (numeroTexto === '.') {
+        setNumero(numero + numeroTexto);
+        //Evaluar si es otro cerom y hay un punto
+      } else if (numeroTexto === '0' && numero.includes('.')) {
+        setNumero(numero + numeroTexto);
+        //evaluar si es diferente de 0 y no tiene un punto
+      } else if (numeroTexto !== '0' && !numero.includes('.')) {
+        setNumero(numeroTexto);
+        // Evitar el 000000.0
+      } else if (numeroTexto === '0' && !numero.includes('.')) {
+        setNumero(numero);
+      } else {
+        setNumero(numero + numeroTexto);
+      }
+    } else {
+      setNumero(numero + numeroTexto);
+    }
+  };
+
+  const btnDelete = () => {
+    let negativo = '';
+    let numeroTemp = numero;
+    if (numero.includes('-')) {
+      negativo = '-';
+      numeroTemp = numero.substring(1);
+    }
+    if (numeroTemp.length > 1) {
+      setNumero(negativo + numeroTemp.slice(0, -1));
+    } else {
+      setNumero('0');
+    }
+  };
+
+  const positivoNegativo = () => {
+    if (numero.includes('-')) {
+      setNumero(numero.replace('-', ''));
+    } else {
+      setNumero('-' + numero);
+    }
   };
 
   return (
@@ -23,8 +65,8 @@ export const CalculadoraScreen = () => {
       </Text>
       <View style={styles.fila}>
         <BotonCal texto="C" color="#9B9B9B" accion={limpiar} />
-        <BotonCal texto="+/-" color="#9B9B9B" accion={limpiar} />
-        <BotonCal texto="del" color="#9B9B9B" accion={limpiar} />
+        <BotonCal texto="+/-" color="#9B9B9B" accion={positivoNegativo} />
+        <BotonCal texto="del" color="#9B9B9B" accion={btnDelete} />
         <BotonCal texto="/" color="#FF9427" accion={limpiar} />
       </View>
       <View style={styles.fila}>
